@@ -1,2 +1,2 @@
-There's no source code(At least for right now)
-This REP was created for Updating Launcher.
+Source code mega puper cool launcher
+(What.)
