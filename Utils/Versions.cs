@@ -12,7 +12,7 @@ namespace CSRAutoUpdater_yea.Utils
 {
     public static class Versions
     {
-        public static string CurrentVersionOfLauncher = "1.0.0.1";
+        public static string CurrentVersionOfLauncher = "1.0.0.2";
         public static string LastVersionOfLauncher = "0.0.0.0";
         public static string GetFileMd5Hash(string filePath)
         {

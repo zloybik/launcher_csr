@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using ConsoleCustom = CSRAutoUpdater_yea.Utils.ConsoleCustom;
+using Steam = CSRAutoUpdater_yea.Utils.Steam;
 
 namespace CSRAutoUpdater_yea.Utils
 {
@@ -23,6 +23,8 @@ namespace CSRAutoUpdater_yea.Utils
         private static string _map = "main_menu";
         private static int _scoreCT = 0;
         private static int _scoreT = 0;
+        private static string _avatarUrl = "";
+        private static string _location = "";
 
         public static async Task<bool> Launch()
         {
@@ -70,7 +72,7 @@ namespace CSRAutoUpdater_yea.Utils
             _process = new Process();
             _process.StartInfo.FileName = $"{directory}\\csgo.exe";
             _process.StartInfo.Arguments = string.Join(" ", Argumentss);
-
+            Discord.SetTimestamp(DateTime.UtcNow);
             return _process.Start();
         }
 
@@ -88,6 +90,12 @@ namespace CSRAutoUpdater_yea.Utils
                 catch
                 {
                     Environment.Exit(1);
+                }
+
+                if (_player != null && _avatarUrl == "" && _location == "")
+                {
+                    _location = await Steam.GetLocationAsync(JObject.Parse(_player.JSON)["steamid"].ToString());
+                    _avatarUrl = await Steam.GetAvatarFullAsync(JObject.Parse(_player.JSON)["steamid"].ToString());
                 }
 
                 if (_node != null && _node.Name.Trim().Length != 0)
@@ -112,7 +120,7 @@ namespace CSRAutoUpdater_yea.Utils
                         Discord.Update();
                     }
 
-                    if (_scoreCT != _node.TeamCT.Score || _scoreT != _node.TeamT.Score)
+                    if ((_scoreCT != _node.TeamCT.Score || _scoreT != _node.TeamT.Score) && _map != "aim_botz")
                     {
                         _scoreCT = _node.TeamCT.Score;
                         _scoreT = _node.TeamT.Score;
@@ -128,10 +136,19 @@ namespace CSRAutoUpdater_yea.Utils
                         Discord.SetLargeArtworkText(_map); // why not tho
                         Discord.SetDetails($"{kd:F2} KD");
                         Discord.SetState($"CT:{_scoreCT} T:{_scoreT}");
-                        Discord.SetSmallArtwork($"{playerJSON["team"].ToString().ToLower()}");
-                        if(playerJSON["team"].ToString().ToLower() == "ct") Discord.SetSmallArtworkText("Counter-Terrorist");
-                        else if (playerJSON["team"].ToString().ToLower() == "t") Discord.SetSmallArtworkText("Terrorist");
-                        else Discord.SetSmallArtworkText("Spectator");
+                        Discord.SetSmallArtwork($"{playerJSON["steamid"].ToString()}");
+                        Discord.SetSmallArtworkText("Terrorist");
+                        Discord.Update();
+                    }
+                    else if(_map == "aim_botz")
+                    {
+                        JObject playerJSON = JObject.Parse(_player.JSON);
+                        Discord.SetLargeArtwork(_map); // actualy in my bot i have more maps XDDD
+                        Discord.SetLargeArtworkText(_map); // why not tho
+                        Discord.SetDetails($"{playerJSON["match_stats"]["kills"]?.Value<int>() ?? 0} kills");
+                        Discord.SetState($"Training on aim_botz!");
+                        Discord.SetSmallArtwork($"{_avatarUrl}"); // method with url, steam avatar :D
+                        Discord.SetSmallArtworkText($"{_location}");
                         Discord.Update();
                     }
                 }
@@ -146,7 +163,7 @@ namespace CSRAutoUpdater_yea.Utils
                     Discord.SetLargeArtwork("icon");
                     Discord.SetSmallArtwork(null);
                     Discord.SetSmallArtworkText(null);
-                    Discord.Update();
+                    Discord.Update();     
                 }
 
                 await Task.Delay(2000);

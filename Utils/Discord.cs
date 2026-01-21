@@ -1,6 +1,7 @@
 ﻿using DiscordRPC;
 using DiscordRPC.Logging;
 using DiscordRPC.Message;
+using System;
 
 namespace CSRAutoUpdater_yea.Utils
 {
@@ -35,11 +36,11 @@ namespace CSRAutoUpdater_yea.Utils
         /// <summary>
         ///  eええええええええ、ThisLibaryIsSoShitAtThisPointXD
         /// </summary>
-        /*public static void SetTimestamp(DateTime? time)
+        public static void SetTimestamp(DateTime time)
         {
-            if (_presence.Timestamps == null) _presence.Timestamps = new();
+            if (_presence.Timestamps == null) _presence.Timestamps = new Timestamps();
             _presence.Timestamps.Start = time; 
-        }*/
+        }
 
         public static void SetLargeArtwork(string key)
         {

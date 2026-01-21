@@ -104,6 +104,7 @@
     <Compile Include="Utils\ConsoleColourMessages.cs" />
     <Compile Include="Utils\Discord.cs" />
     <Compile Include="Utils\Game.cs" />
+    <Compile Include="Utils\Steam.cs" />
     <Compile Include="Utils\Versions.cs" />
   </ItemGroup>
   <ItemGroup>
